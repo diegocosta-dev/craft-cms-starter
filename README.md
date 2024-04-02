@@ -31,7 +31,7 @@ Configure your username and where you want to install projects.
 
 ```sh
 ADMIN_USERNAME		:= user@email.com # Set project user email/user-name
-PROJECT_ROOT			:= "/home/user/projects-path" # Set project path
+PROJECT_ROOT		:= "/home/user/projects-path" # Set project path
 ```
 ## Commands
 

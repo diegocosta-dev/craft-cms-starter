@@ -1,0 +1,21 @@
+{# prettier-ignore-start #}
+{# -- Base layout template that all AJAX requests inherit from -- #}
+{#
+ ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+            htmlPage
+     ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+            content
+     ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+ ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+#}
+{% extends "_layouts/_global_variables.twig" %}
+
+{%- block htmlPage -%}
+    {% minify %}
+        {# -- Primary content block -- #}
+        {% block content %}
+            <code>No block "content" defined.</code>
+        {% endblock content %}
+    {% endminify %}
+{%- endblock htmlPage -%}
+{# prettier-ignore-end #}

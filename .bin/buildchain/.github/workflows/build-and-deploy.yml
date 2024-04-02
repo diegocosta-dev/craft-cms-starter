@@ -1,0 +1,193 @@
+# ./.github/workflows/build-and-deploy.yml
+
+#### Build & Deploy Workflow ####
+
+# This workflow is designed to be used with a Craft CMS project
+# hosted on a VPS provisioned and managed by Laravel Forge.
+#
+# This workflow requires the following secrets to be set in the
+# this GitHub repository:
+
+# FORGE_PROJECT_ROOT — root directory on the server (/home/forge/example.com)
+# FORGE_SSH_HOST url or IP address
+# DATIVE_FORGE_SSH_KEY
+# DATIVE_FORGE_SSH_USER forge
+
+# This workflow will do a few things:
+# 1. Checkout the code from the repo
+# 2. Install Composer dependencies
+# 3. Install Node dependencies
+# 4. Build the frontend
+# 5. Deploy the code to the server
+# 6. Execute remote commands via SSH to prepare the code for deployment
+# 7. Execute Craft commands on the remote server via SSH
+
+name: CraftCMS Build & Atomic Deployment
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  SHA: ${{ github.sha }}
+  PROJECT_ROOT: ${{ secrets.FORGE_PROJECT_ROOT }}
+
+jobs:
+  build-and-deploy:
+    # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    runs-on: ubuntu-latest
+
+    # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idsteps
+    steps:
+      # https://github.com/actions/checkout
+      - name: Checkout
+        # v3 was the latest at the time of writing
+        uses: actions/checkout@v4
+
+      ##############################################
+      #     PHP Setup, with composer and cache     #
+      ##############################################
+
+      # a standard step for GitHub actions on PHP
+      # https://github.com/shivammathur/setup-php
+      - name: Setup PHP with composer v2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: composer:v2
+
+      # Caching Composer depenencies.
+      - name: Get composer cache directory
+        id: composer-cache
+        working-directory: ./cms
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/cms/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        working-directory: ./cms
+        run: composer install --no-dev --no-progress --no-scripts --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-reqs
+
+      ##############################################
+      #       Node Setup, with yarn and cache      #
+      ##############################################
+
+      # a standard step for GitHub actions on Node
+      # https://github.com/actions/setup-node
+      - name: Set up node env
+        # 3.0 was the latest at the time of writing
+        uses: actions/setup-node@v4
+        with:
+          # specify the version appropriate to your project
+          # setup-node can also read the version from a Node version file. see the setup-node docs for details
+          node-version-file: '.nvmrc'
+          # cache installed dependencies for best performance. yarn and pnpm are also supported
+          cache: yarn
+
+      - name: Install dependencies
+        # For Node 16: https://docs.npmjs.com/cli/v8/commands/npm-ci
+        # for other Node versions, look up the npm version at https://nodejs.org/en/download/releases/
+        run: yarn install --immutable
+
+      # Build frontend. For critical, use `yarn build:critical`
+      - name: Build frontend
+        run: yarn build && yarn build:redactor
+
+      ##############################################
+      #             Atomic Deployment              #
+      ##############################################
+
+      # Setup container with private SSH Key (used by rsync)
+      - name: Load private SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DATIVE_FORGE_SSH_KEY }}
+
+      - name: Deploy with rsync
+        run: |
+          rsync -azh --delete-after -e "ssh -o StrictHostKeyChecking=no" ./cms/ ${{ secrets.DATIVE_FORGE_SSH_USER }}@${{ secrets.FORGE_SSH_HOST }}:${{ secrets.FORGE_PROJECT_ROOT }}/deploy-cache/
+
+      # Execute remote commands via SSH
+      - name: Atomic Deploy
+        run: |
+          ssh ${{ secrets.DATIVE_FORGE_SSH_USER }}@${{ secrets.FORGE_SSH_HOST }} << EOF
+            echo "PROJECT_ROOT: $PROJECT_ROOT"
+            echo "SHA: $SHA"
+            if [ ! -d "$PROJECT_ROOT/releases" ];
+            then
+              mkdir $PROJECT_ROOT/releases
+            fi
+            if [ -d "$PROJECT_ROOT/releases/$SHA" ];
+            then
+              echo "Removing: $PROJECT_ROOT/releases/$SHA"
+              rm -rf $PROJECT_ROOT/releases/$SHA;
+            fi
+            if [ ! -d "$PROJECT_ROOT/releases/$SHA" ];
+            then
+              echo "Creating: $PROJECT_ROOT/releases/$SHA"
+              cp -dR $PROJECT_ROOT/deploy-cache $PROJECT_ROOT/releases/$SHA;
+            fi
+            echo "Creating: persistent directories"
+            mkdir -p $PROJECT_ROOT/storage
+            mkdir -p $PROJECT_ROOT/uploaded
+            echo "Symlinking: persistent files & directories"
+            ln -nfs $PROJECT_ROOT/.env $PROJECT_ROOT/releases/$SHA
+            ln -nfs $PROJECT_ROOT/storage $PROJECT_ROOT/releases/$SHA
+            ln -nfs $PROJECT_ROOT/uploaded $PROJECT_ROOT/releases/$SHA/web
+            echo "Linking current to revision: $SHA"
+            rm -f $PROJECT_ROOT/current
+            ln -s $PROJECT_ROOT/releases/$SHA $PROJECT_ROOT/current
+            echo "Removing old releases"
+            cd $PROJECT_ROOT/releases && ls -t | tail -n +3 | xargs rm -rf
+          EOF
+
+      # Execute Craft commands on remote server via ssh
+      - name: Prep Craft CMS
+        run: |
+          ssh ${{ secrets.DATIVE_FORGE_SSH_USER }}@${{ secrets.FORGE_SSH_HOST }} << EOF
+            # Move into current
+            cd $PROJECT_ROOT/current
+
+            # Ensure the craft script is executable
+            chmod a+x craft
+
+            # Restart our long running queue listener process
+            echo "" | sudo -S supervisorctl restart all
+
+            # Turn Craft off
+            php craft off --retry=60
+
+            # Perform update
+            php craft db/backup
+            php craft clear-caches/temp-files
+            php craft clear-caches/compiled-classes
+            php craft clear-caches/compiled-templates
+            php craft clear-caches/data
+            # php craft clear-caches/cp-resources
+            php craft migrate/all
+            php craft project-config/apply
+            # php craft imager-x/clean
+
+            # Turn Craft on
+            php craft on
+            echo "" | sudo -S service php8.1-fpm reload
+          EOF
+
+      ##############################################
+      #            Critical on post deply          #
+      ##############################################
+
+      # Run critical
+      # - name: Build frontend & critical
+      #   run: yarn critical:ci
+
+      # - name: Deploy with rsync
+      #   run: |
+      #     rsync -azh --delete-after --exclude={"/.git/","/.github/"} -e "ssh -o StrictHostKeyChecking=no" ./cms/web/dist/criticalcss/ ${{ secrets.DATIVE_FORGE_SSH_USER }}@${{ secrets.FORGE_SSH_HOST }}:${{ secrets.FORGE_PROJECT_ROOT }}/releases/$SHA/web/dist/criticalcss/

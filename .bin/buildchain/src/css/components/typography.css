@@ -1,0 +1,19 @@
+/**
+ * ./src/css/components/typography.css
+ *
+ * Website Typography
+ *
+ * The base typography for the website and rich text components
+ * should be defined in ./tailwind.preset.cjs
+ *
+ * Use this file to define typography for specific circumstances, such as
+ * when defining typography to a class instead of an element.
+ *
+ * Example:
+ *
+ *  .h2 { ... }
+ *
+ */
+
+@layer components {
+}

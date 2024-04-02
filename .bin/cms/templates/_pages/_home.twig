@@ -1,0 +1,40 @@
+{% extends '_layouts/_naked_layout' %}
+
+{# prettier-ignore #}
+{% block pageContainer %}
+  <div class="w-screen h-screen flex items-center justify-center">
+    <div class="w-full max-w-screen-sm">
+      <div class="p-4">
+        <div class="flex flex-col gap-4">
+          <a href="/" class="mx-auto text-center">
+            {% include '_components/_useSprite' with {
+              id: 'dative-logo',
+              classes: 'w-32 h-32 mx-auto'
+            } %}
+            <h1 class="text-3xl font-bold mt-4">
+              craftcms-starter
+            </h1>
+          </a>
+
+          <div class="text-center prose">
+            <p class="">
+              Welcome to your new Craft CMS project!
+            </p>
+            <p>
+              For more information on how to get started,
+              <a href="https://github.com/dative/craftcms-starter/blob/main/README.md"target="_blank">check the docs</a>.
+            </p>
+          </div>
+          <div class="mx-auto">
+            <div x-data="{ count: 0 }">
+                <button x-on:click="count++" class="rounded-md bg-purple-700 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-purple-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700">
+                  Click to increment:
+                  <span x-text="count"></span>
+                </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

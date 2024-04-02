@@ -1,0 +1,13 @@
+#!/bin/bash
+
+## Description: DDEV post-start hook for the craftcms-starter project
+## Usage: project-post-start
+## Example: "ddev project-post-start"
+## ExecRaw: true
+
+if [ -d "cms" ]; then
+  echo "Craft CMS is installed, running composer install..."
+  echo "TODO: Add your composer install command here."
+else
+  echo "Craft CMS is not installed, skipping composer install..."
+fi

@@ -1,0 +1,41 @@
+{# prettier-ignore-start #}
+{% extends '_base/_base_html_layout.twig' %}
+
+{# -- Any <link> tags that should be included in the <head> #}
+{% block headLinks %}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet" />
+  
+  {# Review this after critical css #}
+  {% set cssPath = 'src/css/app.css' %}
+  {% set cssLinkUrl = craft.vite.asset(cssPath)|default(craft.vite.entry(cssPath)) %}
+  <link rel="stylesheet" href="{{cssLinkUrl}}">
+{% endblock %}
+
+{# -- Any CSS that should be included before </head> -- #}
+{% block headCss %}
+  {{ craft.vite.includeCriticalCssTags() }}
+{% endblock %}
+
+{% block svgSprite %}
+  <div style="visibility: hidden; z-index: -1;position: absolute;">
+    {{ include('_partials/_sprite.svg') }}
+  </div>
+{% endblock %}
+
+{# -- Page body -- #}
+{% block bodyHtml %}
+  {% block pageContainer %}{% endblock %}
+{% endblock %}
+
+{# -- Any JavaScript that should be included before </body> -- #}
+{% block bodyJs %}
+  {{ craft.vite.script("src/js/app.ts", true) }}
+
+  {% if not devMode %}
+    {# Any tracking scripts not handled by SEOmatic should be entered here #}
+  {% endif %}
+
+{% endblock %}
+{# prettier-ignore-end #}

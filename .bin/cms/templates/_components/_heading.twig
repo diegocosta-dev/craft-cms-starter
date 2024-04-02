@@ -1,0 +1,29 @@
+{#
+
+Heading Tag Component
+
+The heading component is a wrapper for the h1, h2, h3, h4, h5, h6 tags.
+
+Usage:
+
+{{ include('_components/_heading', { Parameters }) }}
+
+Parameters:
+
+- text: (Required) The text to display in the heading tag.
+- htag: (Optional) The heading tag to use. Defaults to h2.
+- classes: (Optional) Additional classes to add to the heading tag.
+
+#}
+{% set htag = htag|default('h2') %}
+{# prettier-ignore #}
+{% if (htag|lower) in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] %}
+  {% set headingTag %}
+    <DIV {{ attr({ class: classes|default(false) }) }}>
+      {{- text|default('[heading prop missing]') -}}
+    </DIV>
+  {% endset %}
+  {{ headingTag|replace({ DIV: htag })|raw }}
+{% else %}
+  Error: htag must be one of the following: h1, h2, h3, h4, h5, h6
+{% endif %}

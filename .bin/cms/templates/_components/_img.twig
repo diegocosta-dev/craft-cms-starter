@@ -1,0 +1,120 @@
+{#
+
+Image / Picture Component
+
+Usage:
+{{ include('_components/_img', { Parameters }) }}
+
+Parameters:
+- imgAsset: Asset (required). The Asset source from Craft CMS
+- classes: Array (optional). An array of classes to be applied to the <img> tag
+- pictureClasses: Array (optional). An array of classes to be applied to the <picture> tag
+- sizes: String (optional). The sizes attribute for the <img> and <source> tags
+- loading: String (optional). The loading attribute for the <img> tag. Defaults to 'lazy'
+- transform: String | Array (optional):
+
+  The transform(s) to be applied to the image. If the transform is a string,
+  it will use the named transform in the `imager-x-transforms.php` config file.
+
+  If the transform is an array, it will use the array as the transform
+  configuration. See https://imager-x.spacecat.ninja/transform-parameters.html
+  for more info.
+#}
+
+{# prettier-ignore-start #}
+{% set allowedTags = ['img', 'picture'] %}
+
+{% if imgAsset is defined and imgAsset %}
+
+  {####### Defaults #######}
+  {# <img> default classes #}
+  {% set imgDefaultClasses = [] %}
+
+  {% set defaultTransform = [
+    { width: 1024 },
+    { width: 768 },
+  ] %}
+
+  {####### Utilities and Checks #######}
+  {% set isGif = imgAsset.extension == 'gif' %}
+  {% set isSVG = imgAsset.extension == 'svg' %}
+
+  {####### <img> Attributes #######}
+  {% set alt = imgAsset.alt|default(imgAsset.title) %}
+  {% set sizes = sizes|default('100vw') %}
+  {% set imgClasses = [] %}
+
+  {% if classes is defined and classes %}
+    {% if classes is not iterable %}
+      {% set classes = [classes] %}
+    {% endif %}
+
+    {% set imgClasses = imgDefaultClasses|merge(classes) %}
+  {% else %}
+    {% set imgClasses = imgDefaultClasses %}
+  {% endif %}
+
+  {# <img> Base Config  #}
+  {% set baseImgConfig = {
+    sizes: sizes,
+    class: imgClasses,
+    alt: alt,
+    loading: loading|default('lazy'),
+  } %}
+
+  {% if isSVG %}
+    {# Inline as <svg> if asset has .svg extension #}
+    {% set svgOutput = svg(imgAsset) %}
+    {{ svgOutput|retcon('attr', 'svg', { 'class': imgClasses })|raw }}
+  {% else %}
+
+    {% set newBaseImage = craft.imagerx.transformImage(imgAsset, 'baseTransform') %}
+
+    {# Transforms #}
+    {% set transformedImages = craft.imagerx.transformImage(
+      newBaseImage, transform|default(defaultTransform)
+    ) %}
+
+    {% if transformedImages|length %}
+
+      {% set lastTransform = transformedImages|last %}
+      {% set aspectRatio = lastTransform.height / lastTransform.width %}
+
+      {% set blurhash = craft.imagerx.placeholder({
+        type: 'blurhash',
+        hash: lastTransform.getBlurhash(),
+        format: 'png',
+        width: 8,
+        height: (8 * aspectRatio)|round,
+      }) %}
+
+      {% set imgConfig = baseImgConfig|merge({
+        src: lastTransform.url,
+        srcset: transformedImages|srcset,
+        width: lastTransform.width,
+        height: lastTransform.height,
+        style: "aspect-ratio: #{lastTransform.width} / #{lastTransform.height};background-image: url('#{blurhash}'); background-repeat: no-repeat; background-size: cover;",
+      }) %}
+
+      {% tag 'picture' with {
+        class: pictureClasses|default([]),
+      } %}
+        {% if craft.imagerx.clientSupports('webp') and not isGif %}
+          {# Webp Transforms #}
+          {% set transformedWebps = craft.imagerx.transformImage(
+            newBaseImage,
+            transform|default(defaultTransform),
+            { format: 'webp' }
+          ) %}
+          {{ tag('source',{
+            srcset: transformedWebps|srcset,
+            sizes: sizes,
+            type: 'image/webp',
+          })}}
+        {% endif %}
+        {{ tag('img', imgConfig) }}
+      {% endtag %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+{# prettier-ignore-end #}

@@ -1,0 +1,14 @@
+/**
+ * ./src/css/components/globals.css
+ *
+ * This file is for global styles that are not specific to a component,
+ * but are used throughout the website.
+ *
+ * It can be use as a starting point for your global page components, but
+ * keeping with DRY & KISS principles, as those components grow, you should
+ * consider moving them to their own file.
+ *
+ */
+
+@layer base {
+}

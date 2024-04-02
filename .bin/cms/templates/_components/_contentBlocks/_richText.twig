@@ -1,0 +1,36 @@
+{#
+
+Rich Text Block component
+
+Usage:
+
+{{ include('_components/_contentBlocks/_richText', { Parameters }) }}
+
+Parameters:
+
+- blk: The block object
+
+Rich Text Block object model:
+
+{% set blk = {
+  rContent: 'HTML content',
+} %}
+
+#}
+{# prettier-ignore-start #}
+{% if
+  blk is defined
+  and blk
+  and blk.rContent is defined
+  and blk.rContent
+%}
+  <div class="prose max-w-none">
+    {{
+      blk.rContent
+      |retconSrcset([{ format: 'jpg' },{ format: 'webp' }], 'img', '100vw', true)
+      |retconAttr('img', { loading: 'lazy' })
+      |raw
+    }}
+  </div>
+{% endif %}
+{# prettier-ignore-end #}

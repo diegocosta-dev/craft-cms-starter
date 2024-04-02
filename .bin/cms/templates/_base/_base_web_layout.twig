@@ -1,0 +1,65 @@
+{# prettier-ignore-start #}
+{# -- Base web layout template that all web requests inherit from -- #}
+{#
+ ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+            htmlPage
+
+     ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+            htmlTag
+     ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+
+     ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+            headTag
+     ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+
+     ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+          headContent
+     ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+
+     ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+            bodyTag
+     ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+
+     ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+           svgSprite
+     ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+
+     ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+          bodyContent
+     ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+
+ ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+#}
+{% extends "_layouts/_global_variables.twig" %}
+
+{# prettier-ignore #}
+{%- block htmlPage -%}
+	{% minify %}
+	<!DOCTYPE html>
+
+		{% block htmlTag %}
+			<html lang="{{ craft.app.language |slice(0,2) }}">
+		{% endblock htmlTag %}
+
+		{% block headTag %}
+			<head>
+		{% endblock headTag %}
+
+			{{ include("_base/_head_meta.twig") }}
+
+			{# -- Page content that should be included in the <head> -- #}
+			{% block headContent %}{% endblock headContent %}
+			</head>
+
+			{% block bodyTag %}
+			<body>
+			{% endblock bodyTag %}
+        {# -- SVG sprite that should be included at the start of the <body> -- #}
+				{% block svgSprite %}{% endblock %}
+				{# -- Page content that should be included in the <body> -- #}
+				{% block bodyContent %}{% endblock bodyContent %}
+			</body>
+	</html>
+	{% endminify %}
+{%- endblock htmlPage -%}
+{# prettier-ignore-end #}

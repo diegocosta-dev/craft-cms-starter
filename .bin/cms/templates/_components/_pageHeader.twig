@@ -1,0 +1,28 @@
+{#
+
+Page Header Component
+
+Usage:
+
+{{ include('_components/_pageHeader', { Parameters }) }}
+
+Parameters:
+- title: (Required) The title of the page
+- htag: (Optional) The heading tag to use for the title. Defaults to h1.
+
+
+#}
+{# prettier-ignore #}
+{% if
+  title is defined
+  and title
+%}
+<div>
+  <div class="prose max-w-none">
+    {% include '_components/_heading.twig' with {
+      text: title,
+      htag: htag|default('h1')
+    } %}
+  </div>
+</div>
+{% endif %}

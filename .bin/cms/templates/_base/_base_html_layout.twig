@@ -1,0 +1,75 @@
+{# prettier-ignore-start #}
+{# -- Base HTML layout template that all HTML requests inherit from -- #}
+{#
+ ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+          headContent
+     ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+            headMeta
+     ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+
+     ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+            headLinks
+     ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+
+     ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+             headJs
+     ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+
+     ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+            headCss
+     ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+ ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+
+ ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+          bodyContent
+     ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+           bodyHtml
+     ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+
+     ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+            bodyJs
+     ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+ ▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+
+#}
+{# -- Base HTML layout template that all HTML requests inherit from -- #}
+{% extends craft.app.request.isAjax() and not craft.app.request.getIsPreview()
+    ? "_base/_base_ajax_layout.twig"
+    : "_base/_base_web_layout.twig"
+%}
+
+{% block htmlTag %}
+	<html class="" lang="en" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+{% endblock htmlTag %}
+
+{# -- Page content that should be included in the <head> -- #}
+{% block headContent %}
+	{# -- Any <meta> tags that should be included in the <head> #}
+	{% block headMeta %}{% endblock headMeta %}
+
+	{# -- Any <link> tags that should be included in the <head> #}
+	{% block headLinks %}{% endblock headLinks %}
+
+	{# -- Inline and polyfill JS #}
+	{{ include("_base/_head_js.twig") }}
+
+	{# -- Any JavaScript that should be included before </head> -- #}
+	{% block headJs %}{% endblock headJs %}
+
+	{# -- Inline and critical CSS #}
+	{% block headCss %}{% endblock headCss %}
+
+{% endblock headContent %}
+
+{# -- Page content that should be included in the <body> -- #}
+{% block bodyContent %}
+	{# -- Page content that should be included in the <body> -- #}
+	{% block bodyHtml %}{% endblock bodyHtml %}
+
+	{# -- Inline JS #}
+       {{ include("_base/_body_js.twig") }}
+
+	{# -- Any JavaScript that should be included before </body> -- #}
+	{% block bodyJs %}{% endblock bodyJs %}
+{% endblock bodyContent %}
+{# prettier-ignore-end #}

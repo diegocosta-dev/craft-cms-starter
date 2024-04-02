@@ -1,0 +1,19 @@
+{#
+
+useSprite Component
+
+Usage:
+{{ include('_components/_useSprite', { Parameters }) }}
+
+Parameters:
+- id: String (required). The id of the sprite to use.
+- classes: String (optional). The class to add to the <svg> tag.
+#}
+{# prettier-ignore-start #}
+{% if id is defined and id %}
+  {% set id = (id|first) == '#' ? id[1:] : id %}
+  {% tag 'svg' with { class: classes|default(false) } %}
+    {{ tag('use', { href: '#' ~ id }) }}
+  {% endtag %}
+{% endif %}
+{# prettier-ignore-end #}

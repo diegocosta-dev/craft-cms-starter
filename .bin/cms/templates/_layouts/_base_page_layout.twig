@@ -1,0 +1,19 @@
+{% extends '_layouts/_naked_layout.twig' %}
+
+{# prettier-ignore-start #}
+{% block pageContainer %}
+  <div id="page-container">
+
+    {% include '_partials/_siteHeader' %}
+
+    <main>
+      {% block beforeMainContent %}{% endblock %}
+      {% block mainContent %}{% endblock %}
+      {% block afterMainContent %}{% endblock %}
+    </main>
+
+    {% include '_partials/_siteFooter' %}
+
+  </div>
+{% endblock %}
+{# prettier-ignore-end #}

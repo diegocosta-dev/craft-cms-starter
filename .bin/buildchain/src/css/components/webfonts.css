@@ -1,0 +1,15 @@
+/**
+ * ./src/components/webfonts.css
+ *
+ * Only use when using local webfonts that will be processed by vite
+ * and are located in the ./src/fonts folder. For example:
+ *
+ * @font-face {
+ *   font-family: "FONT-NAME";
+ *   font-style: normal;
+ *   font-weight: 300;
+ *   src: url("../../fonts/FONT-FILENAME.woff") format("woff");
+ *   font-display: swap;
+ * }
+ *
+ */

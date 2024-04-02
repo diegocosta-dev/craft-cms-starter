@@ -1,0 +1,12 @@
+{# prettier-ignore-start #}
+{% if blocks is defined and blocks is iterable %}
+  {% for blk in blocks %}
+    {% if blk.type is defined %}
+      {{ include('_components/_contentBlocks/_' ~ blk.type, {
+        blk: blk,
+        index: loop.index,
+      }, ignore_missing = true) }}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{# prettier-ignore-end #}

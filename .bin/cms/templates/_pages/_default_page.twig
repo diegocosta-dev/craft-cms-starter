@@ -1,0 +1,30 @@
+{% extends '_layouts/_base_page_layout.twig' %}
+
+{# prettier-ignore #}
+{% block mainContent %}
+
+  {# Page Header #}
+  {% block pageHeader %}
+    {{ include('_components/_pageHeader', {
+      title: 'Page Title',
+    }) }}
+  {% endblock %}
+
+  {# Page Content #}
+  <div class="flex flex-col gap-8">
+    {% block beforeContentBlocks %}{% endblock %}
+
+    {% if
+      entry is defined
+      and entry.contentBlocks is defined
+      and entry.contentBlocks
+    %}
+      {% include '_components/_contentBlocks' with {
+        blocks: entry.contentBlocks.all()
+      } %}
+    {% endif %}
+
+    {% block afterContentBlocks %}{% endblock %}
+  </div>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{
+  "endOfLine": "lf",
+  "singleQuote": true,
+  "tabWidth": 2,
+  "semi": false,
+  "trailingComma": "none",
+  "printWidth": 100,
+  "vueIndentScriptAndStyle": true,
+  "bracketSpacing": false,
+  "bracketSameLine": false,
+  "overrides": [
+    {
+      "files": "*.css",
+      "options": {
+        "singleQuote": false
+      }
+    },
+    {
+      "files": "*.twig",
+      "options": {
+        "singleQuote": false
+      }
+    }
+  ],
+  "twigMultiTags": [
+    "nav,endnav",
+    "switch,case,default,endswitch",
+    "ifchildren,endifchildren",
+    "cache,endcache"
+  ],
+  "twigMelodyPlugins": ["node_modules/prettier-plugin-twig-enhancements"],
+  "plugins": ["./node_modules/prettier-plugin-twig-melody"]
+}

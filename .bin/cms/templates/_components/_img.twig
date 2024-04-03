@@ -112,7 +112,7 @@ Parameters:
             type: 'image/webp',
           })}}
         {% endif %}
-        {{ tag('img', imgConfig) }}
+        <img {{ attr(imgConfig) }}>
       {% endtag %}
     {% endif %}
   {% endif %}

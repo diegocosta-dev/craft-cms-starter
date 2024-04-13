@@ -20,7 +20,7 @@ Picture Block object model:
 {# prettier-ignore-start #}
 {% if blk is defined and blk and blk.image is defined and blk.image %}
 
-  {{ include('_components/_img', {
+  {{ include('_partials/_img', {
     imgAsset: blk.image.one(),
     classes: 'w-full'
   }) }}

@@ -4,7 +4,7 @@ Page Header Component
 
 Usage:
 
-{{ include('_components/_pageHeader', { Parameters }) }}
+{{ include('_partials/_pageHeader', { Parameters }) }}
 
 Parameters:
 - title: (Required) The title of the page
@@ -19,7 +19,7 @@ Parameters:
 %}
 <div>
   <div class="prose max-w-none">
-    {% include '_components/_heading.twig' with {
+    {% include '_partials/_heading.twig' with {
       text: title,
       htag: htag|default('h1')
     } %}

@@ -5,8 +5,8 @@
 
   {# Page Header #}
   {% block pageHeader %}
-    {{ include('_components/_pageHeader', {
-      title: 'Page Title',
+    {{ include('_partials/_pageHeader', {
+      title: entry.title ?? 'Page Title',
     }) }}
   {% endblock %}
 
@@ -14,15 +14,11 @@
   <div class="flex flex-col gap-8">
     {% block beforeContentBlocks %}{% endblock %}
 
-    {% if
-      entry is defined
-      and entry.contentBlocks is defined
-      and entry.contentBlocks
-    %}
-      {% include '_components/_contentBlocks' with {
-        blocks: entry.contentBlocks.all()
-      } %}
-    {% endif %}
+    {% block contentBlocks %}
+      {% if entry is defined and entry.contentBlocks is defined and entry.contentBlocks %}
+        {{ entry.contentBlocks.render() }}
+      {% endif %}
+    {% endblock %}
 
     {% block afterContentBlocks %}{% endblock %}
   </div>

@@ -10,7 +10,7 @@
 SHELL = /bin/sh
 
 ADMIN_USERNAME		:= user@email.com # Set project user email/user-name
-PROJECT_ROOT			:= "/home/linux/code/me/craft-5-starter" # Set project path
+PROJECT_ROOT			:= "/home/user/projects-path" # Set project path
 
 # Source the shell script function tasks
 mkfile_path 			:= $(abspath $(lastword $(MAKEFILE_LIST)))

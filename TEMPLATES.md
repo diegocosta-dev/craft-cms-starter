@@ -34,15 +34,6 @@ The tem­plat­ing sys­tem is built on the fol­low­ing struc­ture:
 │   ├── _head_js.twig
 │   ├── _head_meta.twig
 │   └── _tab_handler.twig
-├── _components
-│   ├── _heading.twig
-│   ├── _img.twig
-│   ├── _pageHeader.twig
-│   ├── _useSprite.twig
-│   └── _contentBlocks
-│       ├── index.twig
-│       ├── _richText.twig
-│       └── _picture.twig
 ├── _layouts
 │   ├── _global_variables.twig
 │   ├── _naked_layout.twig
@@ -53,7 +44,14 @@ The tem­plat­ing sys­tem is built on the fol­low­ing struc­ture:
 │   └── _home.twig
 ├── _partials
 │   ├── _site_header.twig
-│   └── _site_footer.twig
+│   ├── _site_footer.twig
+│   ├── _heading.twig
+│   ├── _img.twig
+│   ├── _pageHeader.twig
+│   ├── _useSprite.twig
+│   └── entry
+│       ├── _richText.twig
+│       └── _picture.twig
 ├── index.twig
 └── page.twig
 ```

@@ -19,3 +19,8 @@ Partials should always be placed in the `_partials` folder and omit the `.twig` 
 If a partial starts to get too big, you should first move the file in a folder with the partial original name, and rename it to `index.twig`. That way any existing includes will still work, and you can then start to break the partial into smaller pieces. For example:
 
 `_partials/_partialName.twig` becomes `_partials/_partialName/index.twig`
+
+## entry folder
+`_partials/entry/` 
+
+[Rendering Elements](https://craftcms.com/docs/5.x/system/elements.html#rendering-elements) are entry-type components that can be rendered, How are we doing with our Content Blocks field in `_pages/_default_page.twig`

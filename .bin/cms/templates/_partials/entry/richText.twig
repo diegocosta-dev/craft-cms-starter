@@ -3,30 +3,25 @@
 Rich Text Block component
 
 Usage:
-
-{{ include('_components/_contentBlocks/_richText', { Parameters }) }}
+  
+{{ include('_partials/entry/_richText', { Parameters }) }}
 
 Parameters:
 
-- blk: The block object
+- entry: The block object
 
 Rich Text Block object model:
 
-{% set blk = {
+{% set entry = {
   rContent: 'HTML content',
 } %}
 
 #}
 {# prettier-ignore-start #}
-{% if
-  blk is defined
-  and blk
-  and blk.rContent is defined
-  and blk.rContent
-%}
+{% if entry is defined and entry and entry.rContent is defined and entry.rContent %}
   <div class="prose max-w-none">
     {{
-      blk.rContent
+      entry.rContent
       |retconSrcset([{ format: 'jpg' },{ format: 'webp' }], 'img', '100vw', true)
       |retconAttr('img', { loading: 'lazy' })
       |raw

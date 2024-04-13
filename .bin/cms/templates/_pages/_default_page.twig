@@ -13,14 +13,14 @@
   {# Page Content #}
   <div class="flex flex-col gap-8">
     {% block beforeContentBlocks %}{% endblock %}
-
     {% block contentBlocks %}
-      {% if entry is defined and entry.contentBlocks is defined and entry.contentBlocks %}
-        {{ entry.contentBlocks.render() }}
+      {% set contentBlocks = entry.contentBlocks|default(null) %}
+
+      {% if contentBlocks %}
+        {{ contentBlocks.render() }}
       {% endif %}
     {% endblock %}
 
     {% block afterContentBlocks %}{% endblock %}
   </div>
-
 {% endblock %}

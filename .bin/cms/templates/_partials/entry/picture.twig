@@ -4,25 +4,23 @@ Picture Block component
 
 Usage:
 
-{{ include('_components/_contentBlocks/_picture', { Parameters }) }}
+{{ include('_partials/entry/_picture', { Parameters }) }}
 
 Parameters:
 
-- blk: The block object
+- entry: The block object
 
 Picture Block object model:
 
-{% set blk = {
+{% set entry = {
   image: Asset,
 } %}
 
 #}
 {# prettier-ignore-start #}
-{% if blk is defined and blk and blk.image is defined and blk.image %}
-
+{% if entry is defined and entry and entry.image is defined and entry.image %}
   {{ include('_partials/_img', {
-    imgAsset: blk.image.one(),
-    classes: 'w-full'
+    imgAsset: entry.image|first,
+    classes: 'w-full object-cover'
   }) }}
-
 {% endif %}

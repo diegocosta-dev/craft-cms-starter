@@ -1,3 +1,4 @@
+craftcms/ckeditor:^4.0.3
 craftcms/mailgun:^3.1.0
 mmikkel/retcon:^3.0.0
 nystudio107/craft-minify:^5.0.0-beta.2
@@ -10,4 +11,4 @@ spacecatninja/imager-x:^5.0.0-beta.2
 verbb/formie:^3.0.0-beta.5
 verbb/navigation:^3.0.0-beta.2
 verbb/smith:^3.0.0-beta.1
-verbb/super-table:^4.0.0-beta.1
+verbb/hyper:^2.0.0-beta.7

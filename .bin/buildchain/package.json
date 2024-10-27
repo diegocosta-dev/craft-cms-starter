@@ -60,6 +60,7 @@
     "vite-plugin-restart": "^0.4.0"
   },
   "resolutions": {
-    "string-width": "4.2.3"
+    "string-width": "4.2.3",
+    "rollup": "4.24.0"
   }
 }

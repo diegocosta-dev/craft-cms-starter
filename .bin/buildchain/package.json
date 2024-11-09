@@ -17,7 +17,6 @@
     "dev": "vite",
     "start": "vite",
     "build": "tsc && vite build",
-    "build:redactor": "vite --config redactor.vite.config.js build",
     "preview": "vite preview",
     "critical": "NODE_ENV=production CRITICAL_URL=https://###site-url###/ vite build --config vite.critical.config.js",
     "critical:ci": "NODE_ENV=production CRITICAL_URL=https://###site-url###/ vite build --config vite.critical.config.js",

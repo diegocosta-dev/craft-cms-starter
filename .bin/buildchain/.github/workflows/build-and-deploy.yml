@@ -54,7 +54,7 @@ jobs:
       - name: Setup PHP with composer v2
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '8.2'
           coverage: none
           tools: composer:v2
 
@@ -98,7 +98,7 @@ jobs:
 
       # Build frontend. For critical, use `yarn build:critical`
       - name: Build frontend
-        run: yarn build && yarn build:redactor
+        run: yarn build
 
       ##############################################
       #             Atomic Deployment              #
@@ -177,7 +177,7 @@ jobs:
 
             # Turn Craft on
             php craft on
-            echo "" | sudo -S service php8.1-fpm reload
+            echo "" | sudo -S service php8.2-fpm reload
           EOF
 
       ##############################################
